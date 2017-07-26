@@ -7,6 +7,7 @@ import { SignupPage } from '../signup/signup';
 import { ConfirmPage } from '../confirm/confirm';
 
 import { User } from '../../providers/providers';
+import { GooglePlus } from '@ionic-native/google-plus';
 
 export class LoginDetails {
   username: string;
@@ -18,13 +19,13 @@ export class LoginDetails {
   templateUrl: 'login.html'
 })
 export class LoginPage {
-  
   public loginDetails: LoginDetails;
 
   constructor(public navCtrl: NavController,
               public user: User,
-              public loadingCtrl: LoadingController) {
-    this.loginDetails = new LoginDetails(); 
+              public loadingCtrl: LoadingController,
+              public googlePlus: GooglePlus) {
+    this.loginDetails = new LoginDetails();
   }
 
   login() {
@@ -39,7 +40,7 @@ export class LoginPage {
       console.log('result:', result);
       loading.dismiss();
       this.navCtrl.setRoot(TabsPage);
-    }).catch((err) => { 
+    }).catch((err) => {
       if (err.message === "User is not confirmed.") {
         loading.dismiss();
         this.navCtrl.push(ConfirmPage, { 'username': details.username });
@@ -48,6 +49,15 @@ export class LoginPage {
       loading.dismiss();
     });
   }
+
+  loginWithGoogle() {
+    this.googlePlus.login({})
+      .then((res) => {
+        this.user.loginAwsGoogle(res.idToken, res.displayName);
+      })
+      .catch(err => console.error(err));
+  }
+
 
   signup() {
     this.navCtrl.push(SignupPage);

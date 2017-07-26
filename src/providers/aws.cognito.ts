@@ -52,5 +52,22 @@ export class Cognito {
     });
   }
 
+  makeGoogleCredentials(idToken, username) {
+    AWSCognito.config.credentials = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: aws_cognito_identity_pool_id,
+      Logins: {
+        'accounts.google.com': idToken
+      }
+    });
+     // Obtain AWS credentials
+     AWSCognito.config.credentials.get((error) => {
+        // Access AWS resources here.
+       console.log('we are in', error);
+       if (!error) {
+         const user = this.makeUser(username);
+         console.log(user);
 
+       }
+     });
+  }
 }

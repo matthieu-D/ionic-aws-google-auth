@@ -27,6 +27,10 @@ export class User {
     return this.getUser().getUsername();
   }
 
+  loginAwsGoogle(idToken, username) {
+    this.cognito.makeGoogleCredentials(idToken, username);
+  }
+
   login(username, password) {
     return new Promise((resolve, reject) => {
       let user = this.cognito.makeUser(username);
